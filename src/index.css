@@ -1,6 +1,66 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
+
+@theme {
+  --color-primary: #8b5cf6;
+  /* Violet accent */
+  --color-success: #10b981;
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
+  --color-background: #f8fafc;
+  --color-text-main: #1e293b;
+  --color-text-gray: #64748b;
+  --shadow-card: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-card-hover: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
 body {
   background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f0 100%);
-  font-family: system-ui, sans-serif;
+  font-family: 'Figtree', sans-serif;
   margin: 0;
   min-height: 100vh;
+}
+
+/* --- Buttons --- */
+.btn {
+  @apply px-4 py-2 rounded-lg font-semibold inline-flex items-center gap-2 transition-all duration-200;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.btn:hover {
+  @apply -translate-y-0.5 shadow-md;
+}
+
+.btn.primary {
+  @apply bg-[var(--color-primary)] text-white;
+}
+
+.btn.outline {
+  @apply bg-transparent border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300;
+}
+
+.btn.danger {
+  @apply bg-transparent text-red-500 hover:bg-red-50;
+}
+
+/* --- Badges --- */
+.badge {
+  @apply px-3 py-1 rounded-full text-xs font-bold text-white whitespace-nowrap;
+}
+
+.badge.success {
+  @apply bg-[var(--color-primary)];
+}
+
+.badge.danger {
+  @apply bg-[var(--color-danger)];
+}
+
+.badge.warning {
+  @apply bg-[var(--color-warning)] text-gray-800;
+}
+
+.badge.neutral {
+  @apply bg-gray-400;
 }

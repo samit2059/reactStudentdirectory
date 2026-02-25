@@ -1,202 +1,68 @@
-import React ,{useState} from "react";
-import "./App.css";
-import Input from "./Components/Input.jsx";
-import Button from "./Components/Button.jsx";
+import React from "react";
 import StudentCard from "./Components/StudentCard.jsx";
+import { useStudents } from "./Components/hooks/useStudents.jsx";
+import StudentForm from "./StudentForm.jsx";
+import Toolbar from "./Components/Toolbar.jsx";
 
+const App = () => {
+  const {
+    filteredStudents,
+    search, setSearch,
+    filterStatus, setFilterStatus,
+    sortBy, setSortBy,
+    addStudent,
+    deleteStudent,
+    toggleStatus
+  } = useStudents();
 
+  return (
+    <div className="min-h-screen bg-slate-50 p-6 md:p-12 lg:p-16">
+      <div className="max-w-7xl mx-auto space-y-12">
+        <header className="flex flex-col md:flex-row justify-between items-center md:items-end gap-6 border-b border-slate-200 pb-8">
+          <div className="text-center md:text-left space-y-2">
+            <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight flex items-center gap-4">
+              Student Directory
+            </h1>
+            <p className="text-gray-500">Manage students, track performance, and attendance</p>
+          </div>
+        </header>
 
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <aside className="lg:col-span-1 space-y-6">
+            <StudentForm onAdd={addStudent} />
+          </aside>
 
-function App() {
-  const [students, setStudents] = useState([
-    {
-      id: Date.now(),
-      name: "Samit Shrestha",
-      course: "REACT JS",
-      grade: 88,
-      isPresent: true,
-    },
-  ]);
+          <main className="lg:col-span-2 space-y-6">
+            <Toolbar
+              search={search}
+              onSearch={setSearch}
+              filter={filterStatus}
+              onFilter={setFilterStatus}
+              sort={sortBy}
+              onSort={setSortBy}
+            />
 
-
-
-    const [name, setName] = useState("");
-  const [course, setCourse] = useState("");
-  const [grade, setGrade] = useState("");
-  const [search, setSearch] = useState("");
-  const [filterStatus, setFilterStatus] = useState("all");
-  const [sortBy, setSortBy] = useState("name");
-
-
-
-   const addStudent = (e) => {
-    e.preventDefault();
-    if (!name || !course || !grade) return;
-
-    const newStudent = {
-      id: Date.now(),
-      name,
-      course,
-      grade: Number(grade),
-      isPresent: true,
-    };
-
-    setStudents([...students, newStudent]);
-    setName("");
-    setCourse("");
-    setGrade("");
-  };
-
-
-
-
-   const deleteStudent = (id) => {
-    setStudents(students.filter((s) => s.id !== id));
-  };
-
-  const toggleStatus = (id) => {
-    setStudents(
-      students.map((s) =>
-        s.id === id ? { ...s, isPresent: !s.isPresent } : s
-      )
-    );
-  };
-
-
-
-
-
-
-
-
-    const filteredStudents = students
-    .filter((s) =>
-      s.name.toLowerCase().includes(search.toLowerCase())
-    )
-    .filter((s) =>
-      filterStatus === "all"
-        ? true
-        : filterStatus === "present"
-        ? s.isPresent
-        : !s.isPresent
-    )
-    .sort((a, b) =>
-      sortBy === "name"
-        ? a.name.localeCompare(b.name)
-        : b.grade - a.grade
-    );
-
-
-
-
-
-     return (
-    <div className="container">
-      <header className="header">
-        <h1>Student Directory</h1>
-        <p className="subtitle">
-          Manage students, track performance, and attendance
-        </p>
-      </header>
-
-
-
-
-
-      
-      <div className="toolbar">
-        <Input
-          label="Search"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by name"
-        />
-
-
-
-
-
-        <select
-          value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
-        >
-          <option value="all">All</option>
-          <option value="present">Present</option>
-          <option value="absent">Absent</option>
-        </select>
-
-
-
-
-
-
-
-
- <select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-        >
-          <option value="name">Sort by Name</option>
-          <option value="grade">Sort by Grade</option>
-        </select>
-      </div>
-
-      
-
-
-
-
-      <form className="form" onSubmit={addStudent}>
-        <Input
-          label="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Student name"
-        />
-
-
-
-
-
-         <Input
-          label="Course"
-          value={course}
-          onChange={(e) => setCourse(e.target.value)}
-          placeholder="Course"
-           />
-        <Input
-          label="Grade"
-          type="number"
-          value={grade}
-          onChange={(e) => setGrade(e.target.value)}
-          placeholder="Grade"
-        />
-        <Button type="submit">Add Student</Button>
-      </form>
-
-    
-      {students.length === 0 ? (
-        <p className="empty">No students yet. Add one!</p>
-      ) : filteredStudents.length === 0 ? (
-        <p className="empty">No results found.</p>
-      ) : (
-        <div className="grid">
-          {filteredStudents.map((student) => (
-            <StudentCard
-              key={student.id}
-              student={student}
-              deleteStudent={deleteStudent}
-              toggleStatus={toggleStatus}
-                   />
-          ))}
+            {filteredStudents.length === 0 ? (
+              <div className="text-center py-20 bg-white rounded-xl border-2 border-dashed">
+                <p className="text-gray-400">No students found matching your criteria.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {filteredStudents.map((student) => (
+                  <StudentCard
+                    key={student.id}
+                    student={student}
+                    deleteStudent={deleteStudent}
+                    toggleStatus={toggleStatus}
+                  />
+                ))}
+              </div>
+            )}
+          </main>
         </div>
-      )}
+      </div>
     </div>
   );
-}
+};
 
 export default App;
-
-
-
-
